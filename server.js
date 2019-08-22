@@ -16,20 +16,25 @@ app.use(logger("dev"));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.static("public"));
-mongoose.connect("mongodb://localhost/cnn", {useNewUrlParser: true})
+mongoose.connect("mongodb://localhost/wsj", {useNewUrlParser: true})
 
 app.get("/scrape", function (req, res) {
-    axios.get("https://www.cnn.com/").then(function (res) {
+    axios.get("http://wsj.com").then(function (res) {
         var $ = cheerio.load(res.data);
         $("article h2").each(function (i, element) {
             var result = {};
 
             result.title = $(this)
+            .children(".WSJTheme--headline--3qd-ycaT")
             .children("h3")
             .text();
             result.link = $(this)
-            .children("a")
+            .children(".WSJTheme--headline--3qd-ycaT")
+            .children("h3")
             .attr("href")
+            result.summary = $(this)
+            .children("p")
+            .text()
 
             db.Article.create(result)
             .then(function(dbArticle) {
