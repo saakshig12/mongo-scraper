@@ -1,4 +1,3 @@
-//Adding all require packages
 
 var express = require("express");
 var logger = require("morgan");
@@ -9,7 +8,7 @@ var cheerio = require("cheerio");
 
 var db = require("./models");
 
-var PORT = 9999;
+var PORT = 5000;
 var app = express();
 
 app.use(logger("dev"));
@@ -19,22 +18,22 @@ app.use(express.static("public"));
 mongoose.connect("mongodb://localhost/wsj", {useNewUrlParser: true})
 
 app.get("/scrape", function (req, res) {
-    axios.get("https://wsj.com/").then(function (response) {
+    axios.get("https://www.wsj.com/").then(function (response) {
       var $ = cheerio.load(response.data);
   
       $("article h2").each(function (i, element) {
         var result = {};
   
         result.title = $(this)
-          .children("a")
+          .find("h3")
+          .find("a")
           .text();
         result.link = $(this)
-          .children(".media_summary")
-          .children("h3")
+          .find("a")
           .attr("href");
         result.summary = $(this)
           .children("p")
-          .text()
+          .text();
   
         db.Article.create(result)
           .then(function (dbArticle) {
@@ -73,7 +72,7 @@ app.get("/articles", function (req, res) {
   
   app.post("/articles/:id", function (req, res) {
     db.Note.create(req.body).then(function (dbNote) {
-      return db.Article.findOneAndUpdate({}, { $push: { notes: dbNote._id } }, { new: true });
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
     }).then(function (dbNote) {
       res.json(dbNote);
     })
