@@ -1,0 +1,40 @@
+<div class="row">
+    <h3 class="card"> {{article.title}}</h3>
+    <h5 class="card-panel articleBody">{{body}}</h5>
+</div>
+<div>
+    <div class="col-2"> </div>
+    <form action="/save/{{article._id}}" method="POST" class="card-panel col s8">
+        <h5>Comment on this article</h5>
+        <div class="row">
+            <div class="input-field">
+                <i class="material-icon prefix"></i>
+                <input id="icon_prefix" type="text" placeholder="Name" name="name" class="validate active">
+            </div>
+            <div class="input-field">
+                <i class="material-icons prefix">Comment:</i>
+                <input id="icon_telephone" text="text" placeholder="note" name="note" class="validate active">
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field">
+                <center><input class="btn add-note-button topnav" type="submit" value="Submit"></center>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-3 "></div>
+    <div class="col-5"></div>
+    <h5>Comments:</h5>
+    {{#if article.note}}
+    {{#each article.note}}
+    <div class="card">
+        <p id="nameNote">{{name}}</p>
+        <p>{{body}}</p>
+    </div>
+    {{/each}}
+    {{else}}
+    <li>Add a comment here for everyone to spread your opinions with the world</li>
+    {{/if}}
+</div>
