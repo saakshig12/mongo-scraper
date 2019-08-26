@@ -6,6 +6,7 @@ var mongoose = require("mongoose");
 
 var PORT = 5000;
 var app = express();
+var routes = require("./controller/controller");
 
 app.use(logger("dev"));
 app.use(express.urlencoded({extended: true}));
